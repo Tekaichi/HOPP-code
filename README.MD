@@ -12,7 +12,7 @@ A patient health journey is recorded in EHR, which are rich but sparse, noisy an
 1. New baselines for different label schemes (different level of granularity), for both MIMIC 3 and eICU
 2. Easy-to-use script to reproduce all results
 3. Extensible and modular architecture
-4. Classes to handle the studied datasets
+4. Tools to handle the studied datasets
 
 
 
@@ -38,6 +38,9 @@ Place where the datasets should be placed in. Here, there is only a really small
 
 #### Others
 models.py - PyTorch model implementation
+
 phenotype.py - Script used to run all experiments
+
 Processing.py, metrics.py and utilities.py hold auxiliary functions.
+
 ICDCodesGrouper.py is responsible for mapping ICD9 codes to different levels of granularity - CCS, Category Level, 3-digit and ICD9 Chapters.

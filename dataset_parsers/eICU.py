@@ -3,7 +3,7 @@ import sys
 sys.path.append("..")
 import pandas as pd
 from ICDCodesGrouper import ICDCodesGrouper
-from base import Dataset
+from .base import Dataset
 
 class eICU(Dataset):
     
