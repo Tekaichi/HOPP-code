@@ -1,0 +1,1 @@
+Run Poincare compute.ipynb for other Poincaré embeddings dimensions.

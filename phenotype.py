@@ -92,8 +92,7 @@ parser.add_argument('--ancestry',type=str,
 
 parser.add_argument("--override",type=bool,
                   dest="override",
-                  help="Run again",default=False)#Change this to false later on
-
+                  help="Run again",default=False)
 
 parser.add_argument("--k_fold",type=int,
                   dest="k_fold",
@@ -102,7 +101,7 @@ parser.add_argument("--k_fold",type=int,
 #one for each task.
 parser.add_argument("--optimize",type=str,nargs='+',
                   dest="optimize",
-                  help="Metric to be optimized",default=["R@30"])#Change this to false later on
+                  help="Metric to be optimized",default=["R@30"])
 
 
 parser.add_argument('--poincare',type=str2bool,
@@ -127,20 +126,20 @@ assert args.k_fold == 0 or (args.k_fold >1 and len(args.optimize) == len(args.ta
 assert args.ancestry in ['no','full','partial'],"Ancestry parameter not recognized"
 assert 'treatment' not in args.task or ('treatment' in args.task and args.grouper !='cat_level')
 
-icdgrouper = ICDCodesGrouper(ccs_path='CCS-SingleDiagnosisGrouper.txt',ccs_procedure_path='CCS-SingleProceduresGrouper.txt')
+icdgrouper = ICDCodesGrouper(ccs_path='./icd_files/CCS-SingleDiagnosisGrouper.txt',ccs_procedure_path='./icd_files/CCS-SingleProceduresGrouper.txt')
 
 if args.dataset.lower() == 'mimic':
-    mimic_path =  "/notebooks/Experiments/Datasets/MIMIC 3/"
+    mimic_path =  "/Datasets/MIMIC_3/"
     dataset = MIMIC_3(mimic_path,save_steps = True)
 elif args.dataset.lower()=='eicu':
-    eicu_path = "/notebooks/Experiments/Datasets/eICU/"
+    eicu_path = "/Datasets/eICU/"
     dataset = eICU(eicu_path,save_steps = True)
 elif args.dataset.lower()=='all':
     assert 'phenotype' in args.task and len(args.task)==1, "Can't use both datasets for non-phenotype tasks"
     dataset = []
-    mimic_path =  "/notebooks/Experiments/Datasets/MIMIC 3/"
+    mimic_path =  "/Datasets/MIMIC_3/"
     dataset.append(MIMIC_3(mimic_path,save_steps = True))
-    eicu_path = "/notebooks/Experiments/Datasets/eICU/"
+    eicu_path = "/Datasets/eICU/"
     dataset.append(eICU(eicu_path,save_steps = True))
 
 grouper = lambda group: lambda x: icdgrouper.lookup(group,x)
@@ -407,7 +406,6 @@ for train_index, test_index in splt:
                 run.finish()
                 err = err + 1
                 if err == 4:
-                    print("FATALITY",msg)
                     break
                 continue
 
@@ -426,9 +424,9 @@ for train_index, test_index in splt:
             results['loss'] = loss
             results["time"] = model_time
             df = pd.DataFrame({f_name:results})
-            #optimize.. for args.task,args.optimize, get mx values
+           
             if k_fold >1:
-                #look at this later
+           
                 for idx,(task,optimize) in enumerate(zip(args.task,args.optimize)):
                     mx = df.T[task].apply(pd.Series)[optimize].max()
                     if mx >= curr_mx[idx]:
@@ -436,7 +434,6 @@ for train_index, test_index in splt:
                         idxmx = df.T[task].apply(pd.Series)[optimize].astype(float).idxmax()
                         break
                     
-                    #How to aggrate max of several tasks?
             else:  
                 torch.save(model.state_dict(), directory.replace('results','models')+f'/{f_name}')
                 df.to_pickle(f'./{directory}/{f_name}') 

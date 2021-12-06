@@ -1,16 +1,5 @@
 
-import random
-import pandas as pd
-import numpy as np
-import time
 import torch
-from torch import nn
-import os
-from os import path
-import pickle
-import networkx as nx
-from torch_geometric.data import Data
-from sklearn.preprocessing import MultiLabelBinarizer
 import re
 
 
@@ -53,8 +42,6 @@ def parse(G,row,suffix='',connected=True):
             edges = [(ancestor,code) for code in codes]
             G.add_edges_from(edges)
          
-    
-   
 
     return number,idx,hierarchy
 
@@ -73,7 +60,6 @@ def get_or_create_diagnosis_ccs_graph(G,f_name,suffix=False,connected=True,retur
         number,codes,mapping = parse(G,group,suffix=suffix,connected=connected)
         idx = {**codes,**idx}
         hierarchy = {**hierarchy,**mapping}
-    #TODO: Automate the range of level 1 categories.
     for root in range(0,18+1):
         G.add_edge(f'{suffix}0',f'{suffix}{root}')
         
@@ -93,7 +79,6 @@ def get_or_create_procedures_ccs_graph(G,f_name,suffix=False,connected=True):
         suffix = ''
     for group in groups:
         parse(G,group,suffix=suffix,connected=connected)
-    #TODO: Automate the range of level 1 categories.
     for root in range(1,16+1):
         G.add_edge(f'{suffix}0',f'{suffix}{root}')
     return G

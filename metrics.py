@@ -12,11 +12,8 @@ def recall(y_pred,y_real,k=10):
 
     return top_k.sum(dim=1)/torch.clamp(y_real.sum(dim=1),max=k)
 def calculate_metrics(y_pred,y_real,k=10,axis=None):
-    
-
-        
+          
     #Remove those that have no positive label.
-    #TODO if no positive labei is present, the prediction should be equally distributed among all classes?
     if axis is None:
         axis = 0 if y_pred.shape[1] == 1 else 1
     if axis == 1:
@@ -35,11 +32,9 @@ def calculate_metrics(y_pred,y_real,k=10,axis=None):
         y_pred = sort.indices[:k]
         top_k = y_real[y_pred].flatten()
 
-    
-   
+
     div = torch.clamp(y_real.sum(dim=axis),max=k)
-    
-               
+
     recall = (top_k.sum(dim=axis)/div).mean()
     precision = (top_k.sum(dim=axis)/k)
     precision = precision.mean()
@@ -53,10 +48,9 @@ def fnrate(y_pred,y_real):
     y_real = y_real.cpu().detach().numpy()
     c_matrix = confusion_matrix(y_real, y_pred.round(),labels=[0,1])
     tn, fp, fn, tp  =c_matrix.ravel()
-    #return {"False Negative Rate":fn/(tp+fn),
+
     return {"sensivity":    tp / (tp + fn), "tp":tp,"fn":fn,"fp":fp,"tn":tn,"specificity":tn/(tn+fp)}
+
 def get_accuracy(y_pred,y_real):
-    #y_pred = y_pred.detach().numpy()
-    #y_real = y_real.detach().numpy()
     return accuracy_score(y_real,y_pred)
 
